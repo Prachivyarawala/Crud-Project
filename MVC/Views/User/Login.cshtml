@@ -1,0 +1,67 @@
+@model API.Models.User
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="~/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="content">
+            <div class="text">
+                Login Form
+            </div>
+            <form asp-controller="User" asp-action="Login" method="post">
+                <!-- Other HTML code -->
+               <div class="validation-summary-errors">
+                  @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                  {
+                     <p class="text-danger">@Html.Raw(ViewData["ErrorMessage"])</p>
+                  }
+               </div>
+               <!-- Other HTML code -->
+
+                <div class="field">
+                    <input type="text" asp-for="c_useremail" placeholder="Email Id" >
+                    <span class="fas fa-envelope"></span>
+                    <label>Email or Phone</label>
+                </div>
+               <span asp-validation-for="c_useremail" class="text-danger"></span>
+
+                <div class="field">
+                    <input type="password" asp-for="c_userpassword" placeholder="Password" >
+                    <span class="fas fa-lock"></span>
+                    <label>Password</label>
+                </div>
+               <span asp-validation-for="c_userpassword" class="text-danger"></span>
+
+                <div class="forgot-pass">
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button>Sign in</button>
+                <div class="sign-up">
+                    Not a member?
+                    <a asp-controller="User" asp-action="Register">signup now</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Attach input event handlers to update error messages dynamically
+        $('input').on('input', function () {
+            var fieldName = $(this).attr('name');
+            var errorContainer = $('[data-valmsg-for="' + fieldName + '"]');
+            errorContainer.html(''); // Clear the error message
+        });
+    });
+</script>
+
+</html>
