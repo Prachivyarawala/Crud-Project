@@ -1,0 +1,149 @@
+@model API.Models.City
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New City</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .form-container {
+            display: flex;
+            margin: auto;
+            width: 700px;
+            justify-content: space-between;
+            border: 2px solid #007bff;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input,
+        select,
+        button {
+            width: calc(100% - 10px);
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        span.validation-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Add New City</h1>
+
+    <div class="form-container">
+        <form asp-controller="City" asp-action="AddCity" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="c_cityname">City Name:</label>
+                <input type="text" id="c_cityname" name="c_cityname" asp-for="c_cityname">
+                <span class="validation-message" asp-validation-for="c_cityname"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_type">Type:</label>
+                <input type="text" id="c_type" name="c_type" asp-for="c_type">
+                <span class="validation-message" asp-validation-for="c_type"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_city_facility">City Facility:</label>
+                <input type="text" id="c_city_facility" name="c_city_facility" asp-for="c_city_facility">
+                <span class="validation-message" asp-validation-for="c_city_facility"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_city_photo">City Photo:</label>
+                <input type="file" id="c_city_photo" name="c_city_photo" asp-for="c_city_photo">
+                <span class="validation-message" asp-validation-for="c_city_photo"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_date">Date:</label>
+                <input type="date" id="c_date" name="c_date" asp-for="c_date">
+                <span class="validation-message" asp-validation-for="c_date"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_stateid">State ID:</label>
+                <input type="text" id="c_stateid" name="c_stateid" asp-for="c_stateid">
+                <span class="validation-message" asp-validation-for="c_stateid"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="c_userid">User ID:</label>
+                <input type="text" id="c_userid" name="c_userid" asp-for="c_userid">
+                <span class="validation-message" asp-validation-for="c_userid"></span>
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Add City</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        // Attach event handlers for user activity (e.g., mousemove, keydown)
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Initialize the inactivity timer on page load
+        resetInactivityTimer();
+
+    </script>
+</body>
+
+</html>
