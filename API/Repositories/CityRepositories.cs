@@ -35,6 +35,7 @@ namespace API.Repositories
                 connection.Open();
                 var cmd = new NpgsqlCommand("SELECT ct.c_cityid, cu.c_userid, cu.c_username, ct.c_cityname, ct.c_type, ct.c_city_facility, ct.c_city_photo, ct.c_stateid, ts.c_statename, ct.c_date FROM public.t_citytask ct JOIN public.t_srs_user cu ON ct.c_userid = cu.c_userid JOIN public.t_state ts ON ct.c_stateid = ts.c_stateid WHERE ct.c_userid = @userid", connection);
                 cmd.Parameters.AddWithValue("@userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+                Console.WriteLine("id : " +  _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
