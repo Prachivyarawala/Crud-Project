@@ -9,5 +9,6 @@ namespace API.Models
     {
         public int? c_stateid { get; set; }
         public string? c_statename { get; set; }
+        // state
     }
 }
