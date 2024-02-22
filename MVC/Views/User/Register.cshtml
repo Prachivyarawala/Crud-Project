@@ -1,0 +1,77 @@
+@model API.Models.User
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+
+<head>
+   <meta charset="utf-8">
+   <!-- <title>Neumorphism Login Form UI | CodingNepal</title> -->
+   <link rel="stylesheet" href="~/css/register.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+   <div class="login-container">
+      <div class="content">
+         <div class="text">
+            Register Form
+         </div>
+         <form asp-action="Register" method="post">
+            <div class="field">
+               <input type="text" name="c_username" placeholder="UserName" asp-for="c_username"  >
+               <span class="fas fa-user"></span>
+               <label>UserName</label>
+            </div>
+            <span asp-validation-for="c_username"  class="text-danger"></span>
+            <div class="field">
+               <input type="text" name="c_useremail" placeholder="Email Id" asp-for="c_useremail"  >
+               <span class="fas fa-envelope"></span>
+               <label>Email</label>
+            </div>
+            <span asp-validation-for="c_useremail" class="text-danger"></span>
+            @if (ViewData.ModelState.TryGetValue("EmailExists", out var emailExistsError))
+            {
+               <span class="text-danger">@emailExistsError.Errors[0].ErrorMessage</span>
+            }
+
+
+            <div class="field">
+               <input type="password" name="c_userpassword" placeholder="Password" asp-for="c_userpassword" >
+               <span class="fas fa-lock"></span>
+               <label>Password</label>  
+            </div>
+            <span asp-validation-for="c_userpassword"  class="text-danger"></span>
+            <div class="field">
+               <input type="password" placeholder="Confirm Password" name="confirmPassword" >
+               <span class="fas fa-check-circle"></span>
+               <label>Confirm Password</label>
+            </div>
+            <span asp-validation-for="confirmPassword" class="text-danger"></span>
+
+            <button>Sign Up</button>
+            <div class="sign-up">
+               Already have Account?
+               <a asp-controller="User" asp-action="Login">signIn now</a>
+            </div>
+         </form>
+      </div>
+   </div>
+
+<!-- ... (existing code) -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Attach input event handlers to update error messages dynamically
+        $('input').on('input', function () {
+            var fieldName = $(this).attr('name');
+            var errorContainer = $('[data-valmsg-for="' + fieldName + '"]');
+            errorContainer.html(''); // Clear the error message
+        });
+    });
+</script>
+</body>
+
+
+
+</html>
