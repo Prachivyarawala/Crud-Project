@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
-    [Route("[controller]")]
     public class CityController : Controller
     {
         private readonly ILogger<CityController> _logger;

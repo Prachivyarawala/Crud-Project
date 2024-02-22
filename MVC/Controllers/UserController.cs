@@ -87,9 +87,9 @@ namespace MVC.Controllers
                 ViewBag.IsAuthenticated = true;
                 if (user.c_useremail.Equals("admin@gmail.com") && user.c_userpassword.Equals("123456"))
                 {
-                    return RedirectToAction("Index", "APIAdmin");
+                    return RedirectToAction("Index", "City");
                 }
-                return RedirectToAction("Index", "UserPurchase");
+                return RedirectToAction("Index", "City");
             }
             else
             {

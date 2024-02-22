@@ -1,9 +1,19 @@
+using API.Repositories;
+
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<IUserRepositories, UserRepositories>();
+builder.Services.AddSingleton<ICityRepositories, CityRepositories>();
+builder.Services.AddScoped<CommonRepositories>();
+
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
+
+// builder.Services.AddSingleton<IUserRepositories, UserRepositories>();
+// builder.Services.AddSingleton<ICityRepositories, CityRepositories>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +34,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpContextAccessor();
+
+// Add distributed caching
+builder.Services.AddDistributedMemoryCache();
 
 var app = builder.Build();
 

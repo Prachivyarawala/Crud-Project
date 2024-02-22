@@ -8,7 +8,7 @@ using API.Models;
 using API.Repositories;
 //using system jgiejgi
 
-namespace MVC.Repositories
+namespace API.Repositories
 {
     public class UserRepositories : CommonRepositories, IUserRepositories
     {
