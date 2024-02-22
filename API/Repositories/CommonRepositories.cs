@@ -9,7 +9,7 @@ namespace API.Repositories
 {
     public class CommonRepositories
     {
-        protected NpgsqlConnection conn;
+        protected NpgsqlConnection connection;
 
 
 
@@ -21,7 +21,7 @@ namespace API.Repositories
                 .Build();
 
 
-                conn = new NpgsqlConnection(myConfig.GetConnectionString("DefaultConnection"));
+                connection = new NpgsqlConnection(myConfig.GetConnectionString("DefaultConnection"));
         }
     }
 }
