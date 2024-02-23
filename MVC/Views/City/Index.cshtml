@@ -1,10 +1,12 @@
 @model List<API.Models.City>
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Your All Cities</title>
     <link rel="stylesheet" href="~/css/City.css">
 </head>
+
 <body>
     <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
 
@@ -41,13 +43,16 @@
                         <td>@(city.c_date.HasValue ? city.c_date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                         <td>@(city.c_stateid.HasValue ? city.c_stateid.Value.ToString() : "N/A")</td>
                         <td>
-                        <button type="button" class="btn btn-danger"
-                            onclick="deleteCity('@city.c_cityid')">Delete</button>
-                        <form asp-action="UpdateCity" asp-controller="City" method="get">
-                            <input type="hidden" name="id" value="@city.c_cityid" />
-                            <button type="submit" class="btn btn-primary">Edit</button>
-                        </form>
-                    </td>
+                            <form asp-action="delete" asp-controller="City" method="post">
+                                <input type="hidden" name="id" value="@city.c_cityid" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+
+                            <form asp-action="UpdateCity" asp-controller="City" method="get">
+                                <input type="hidden" name="id" value="@city.c_cityid" />
+                                <button type="submit" class="btn btn-primary">Edit</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -72,4 +77,5 @@
         resetInactivityTimer();
     </script>
 </body>
+
 </html>
