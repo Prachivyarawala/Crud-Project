@@ -41,7 +41,7 @@
                         <td>@city.c_city_facility</td>
                         <td>@city.c_city_photo</td>
                         <td>@(city.c_date.HasValue ? city.c_date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
-                        <td>@(city.c_stateid.HasValue ? city.c_stateid.Value.ToString() : "N/A")</td>
+                        <td>@(city.State.c_stateid.HasValue ? city.State.c_stateid.Value.ToString() : "N/A")</td>
                         <td>
                             <form asp-action="delete" asp-controller="City" method="post">
                                 <input type="hidden" name="id" value="@city.c_cityid" />
