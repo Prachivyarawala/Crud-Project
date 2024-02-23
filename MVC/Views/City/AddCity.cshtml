@@ -1,0 +1,143 @@
+@model API.Models.City
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <style>
+        .city-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            margin-right: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+
+</head>
+
+<body>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New City</title>
+    <h1 id="title">Add City</h1>
+    <br><br><br>
+    <div class="container">
+        <div>
+            <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_cityid">City Id:</label>
+                    <input type="hidden" readonly class="form-control" id="c_cityid" name="c_cityid">
+                </div>
+                <div class="form-group">
+                    <label for="c_cityname">City Name:</label>
+                    <input type="text" class="form-control" id="c_cityname" name="c_cityname">
+                </div>
+                <div class="form-group">
+                    <label>Type:</label><br>
+                    <label class="radio-label"><input type="radio" id="rural" name="c_type" value="Rural">Rural</label>
+                    <label class="radio-label"><input type="radio" id="urban" name="c_type" value="Urban">Urban</label>
+                </div>
+                <div class="form-group">
+                    <label>Facility:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="airport" name="facility"
+                            value="Airport">Airport</label>
+                    <label class="checkbox-label"><input type="checkbox" id="metro" name="facility"
+                            value="Metro">Metro</label>
+                    <label class="checkbox-label"><input type="checkbox" id="other" name="facility"
+                            value="Other">Other</label>
+                </div>
+                <div class="form-group">
+                    <label for="c_photo">City Photo:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img class="" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_stateid">State:</label>
+                    <select class="form-control" id="c_stateid" name="c_stateid" asp-items="ViewBag.states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_date">Date:</label>
+                    <input type="date" class="form-control" id="c_date" name="c_date">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login';
+            }, 300000);
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        resetInactivityTimer();
+
+        document.getElementById('cityForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('cityForm');
+            var formData = new FormData(form);
+
+            var facilities = [];
+            $('input[name="facility"]:checked').each(function () {
+                facilities.push($(this).val());
+            });
+
+            formData.append("c_city_facility", facilities.join(','));
+
+            fetch('/City/AddCity', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add city.');
+                    }
+                    return response.text(); 
+                })
+                .then(data => {
+                    console.log(data); 
+                    alert("City added successfully!");
+                    window.location.href = '/City/Index';
+                })
+                .catch(error => {
+                    console.error('Error adding city:', error.message);
+                    alert("Failed to add city.");
+                });
+        });
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

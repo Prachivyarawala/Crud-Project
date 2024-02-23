@@ -1,0 +1,75 @@
+@model List<API.Models.City>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your All Cities</title>
+    <link rel="stylesheet" href="~/css/City.css">
+</head>
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <h1>Your All Cities</h1>
+    <p>
+        <a class="btn btn-primary" asp-action="AddCity">Add New City</a>
+    </p>
+
+    <div class="table-container">
+        <table class="table" id="cityTable">
+            <thead>
+                <tr>
+                    <th>City ID</th>
+                    <th>User ID</th>
+                    <th>City Name</th>
+                    <th>Type</th>
+                    <th>City Facility</th>
+                    <th>City Photo</th>
+                    <th>Date</th>
+                    <th>State ID</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var city in Model)
+                {
+                    <tr>
+                        <td>@city.c_cityid</td>
+                        <td>@city.user.c_userid</td>
+                        <td>@city.c_cityname</td>
+                        <td>@city.c_type</td>
+                        <td>@city.c_city_facility</td>
+                        <td>@city.c_city_photo</td>
+                        <td>@(city.c_date.HasValue ? city.c_date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
+                        <td>@(city.c_stateid.HasValue ? city.c_stateid.Value.ToString() : "N/A")</td>
+                        <td>
+                        <button type="button" class="btn btn-danger"
+                            onclick="deleteCity('@city.c_cityid')">Delete</button>
+                        <form asp-action="UpdateCity" asp-controller="City" method="get">
+                            <input type="hidden" name="id" value="@city.c_cityid" />
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </form>
+                    </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        // Attach event handlers for user activity (e.g., mousemove, keydown)
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Initialize the inactivity timer on page load
+        resetInactivityTimer();
+    </script>
+</body>
+</html>
