@@ -84,6 +84,7 @@
 
 
     <script>
+        
         document.getElementById('cityForm').addEventListener('submit', function (event) {
             event.preventDefault();
             var form = document.getElementById('cityForm');
@@ -96,10 +97,10 @@
 
             formData.append("c_city_facility", facilities.join(','));
             console.log(formData);
-            
+
             var fileInput = document.getElementById('file');
             if (fileInput.files.length === 0) {
-                formData.append("file", null); 
+                formData.append("file", null);
             }
 
             fetch('/City/UpdateCity', {
