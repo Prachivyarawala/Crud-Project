@@ -98,9 +98,9 @@ namespace MVC.Controllers
             }
             ViewBag.IsAuthenticated = true;
             var states = _cityrepo.GetAllstate();
-            ViewBag.states = new SelectList(states, "c_stateid", "c_statename");
-            Console.WriteLine("id" + id);
+            //Console.WriteLine("id" + id);
             var city = _cityrepo.FetchByCityId(id);
+            ViewBag.states = new SelectList(states, "c_stateid", "c_statename",city.State.c_stateid);
 
             return View(city);
         }
