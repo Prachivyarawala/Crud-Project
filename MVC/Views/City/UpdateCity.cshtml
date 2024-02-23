@@ -55,11 +55,11 @@
                 <div class="form-group">
                     <label>Facility:</label><br>
                     <label class="checkbox-label"><input type="checkbox" id="airport" name="facility"
-                            value="Airport">Airport</label>
+                            value="Airport" @(Model.c_city_facility.Contains("Airport")?"checked":"")>Airport</label>
                     <label class="checkbox-label"><input type="checkbox" id="metro" name="facility"
-                            value="Metro">Metro</label>
+                            value="Metro" @(Model.c_city_facility.Contains("Metro")?"checked":"")>Metro</label>
                     <label class="checkbox-label"><input type="checkbox" id="other" name="facility"
-                            value="Other">Other</label>
+                            value="Other" @(Model.c_city_facility.Contains("Other")?"checked":"")>Other</label>
                 </div>
                 <div class="form-group">
                     <label for="c_photo">City Photo:</label>
