@@ -7,6 +7,7 @@ namespace API.Repositories
 {
     public class CityRepositories
     {
+
         
     }
 }
