@@ -43,7 +43,7 @@
                         <td>
                         <button type="button" class="btn btn-danger"
                             onclick="deleteCity('@city.c_cityid')">Delete</button>
-                        <form asp-action="EditCity" asp-controller="City" method="get">
+                        <form asp-action="UpdateCity" asp-controller="City" method="get">
                             <input type="hidden" name="id" value="@city.c_cityid" />
                             <button type="submit" class="btn btn-primary">Edit</button>
                         </form>

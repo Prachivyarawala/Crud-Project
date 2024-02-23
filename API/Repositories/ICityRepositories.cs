@@ -13,5 +13,8 @@ namespace API.Repositories
         List<State> GetAllstate();
         
         bool AddCity(City city);
+
+        bool UpdateCity(City city);
+        City FetchByCityId(int cityId);
     }
 }

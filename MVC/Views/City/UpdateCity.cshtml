@@ -32,23 +32,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New City</title>
-    <h1 id="title">Add City</h1>
+    <h1 id="title">Update City</h1>
     <br><br><br>
     <div class="container">
         <div>
             <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="c_cityid">City Id:</label>
-                    <input type="hidden" readonly class="form-control" id="c_cityid" name="c_cityid">
+                    <input type="text" readonly class="form-control" id="c_cityid" asp-for="c_cityid">
                 </div>
                 <div class="form-group">
                     <label for="c_cityname">City Name:</label>
-                    <input type="text" class="form-control" id="c_cityname" name="c_cityname">
+                    <input type="text" class="form-control" id="c_cityname" asp-for="c_cityname">
                 </div>
                 <div class="form-group">
                     <label>Type:</label><br>
-                    <label class="radio-label"><input type="radio" id="rural" name="c_type" value="Rural">Rural</label>
-                    <label class="radio-label"><input type="radio" id="urban" name="c_type" value="Urban">Urban</label>
+                    <label class="radio-label"><input type="radio" id="rural" asp-for="c_type"
+                            value="Rural">Rural</label>
+                    <label class="radio-label"><input type="radio" id="urban" asp-for="c_type"
+                            value="Urban">Urban</label>
                 </div>
                 <div class="form-group">
                     <label>Facility:</label><br>
@@ -63,17 +65,17 @@
                     <label for="c_photo">City Photo:</label>
                     <input type="file" class="form-control" id="file" name="file">
                 </div>
-                <img class="" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
+                <img src="@Model.c_city_photo" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
 
                 <div class="form-group">
                     <label for="c_stateid">State:</label>
-                    <select class="form-control" id="c_stateid" name="c_stateid" asp-items="ViewBag.states">
+                    <select class="form-control" id="c_stateid" asp-for="c_stateid" asp-items="ViewBag.states">
                         <option value="">Select State</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="c_date">Date:</label>
-                    <input type="date" class="form-control" id="c_date" name="c_date">
+                    <input type="date" class="form-control" id="c_date" asp-for="c_date">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -82,6 +84,52 @@
 
 
     <script>
+        document.getElementById('cityForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('cityForm');
+            var formData = new FormData(form);
+
+            var facilities = [];
+            $('input[name="facility"]:checked').each(function () {
+                facilities.push($(this).val());
+            });
+
+            formData.append("c_city_facility", facilities.join(','));
+            console.log(formData);
+            
+            var fileInput = document.getElementById('file');
+            if (fileInput.files.length === 0) {
+                formData.append("file", null); 
+            }
+
+            fetch('/City/UpdateCity', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to updated city.');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log(data);
+                    alert("City updated successfully!");
+                    window.location.href = '/City/Index';
+                })
+                .catch(error => {
+                    console.error('Error updated city:', error.message);
+                    alert("Failed to Update city.");
+                });
+        });
+
+
+
+
+
+
+
+
         var inactivityTimeout;
 
         function resetInactivityTimer() {
@@ -95,45 +143,6 @@
         document.addEventListener('keydown', resetInactivityTimer);
 
         resetInactivityTimer();
-
-        document.getElementById('cityForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            var form = document.getElementById('cityForm');
-            var formData = new FormData(form);
-
-            var facilities = [];
-            $('input[name="facility"]:checked').each(function () {
-                facilities.push($(this).val());
-            });
-
-            formData.append("c_city_facility", facilities.join(','));
-
-            fetch('/City/AddCity', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to add city.');
-                    }
-                    return response.text(); 
-                })
-                .then(data => {
-                    console.log(data); 
-                    alert("City added successfully!");
-                    window.location.href = '/City/Index';
-                })
-                .catch(error => {
-                    console.error('Error adding city:', error.message);
-                    alert("Failed to add city.");
-                });
-        });
-
-
-
-
-
-
 
 
 

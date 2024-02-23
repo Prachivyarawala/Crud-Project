@@ -87,6 +87,73 @@ namespace MVC.Controllers
             return BadRequest(new { error = "Failed to add city." });
         }
 
+        [HttpGet]
+        public IActionResult UpdateCity(int id)
+        {
+            string username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                ViewBag.IsAuthenticated = false;
+                return RedirectToAction("Login", "User");
+            }
+            ViewBag.IsAuthenticated = true;
+            var states = _cityrepo.GetAllstate();
+            ViewBag.states = new SelectList(states, "c_stateid", "c_statename");
+            Console.WriteLine("id" + id);
+            var city = _cityrepo.FetchByCityId(id);
+
+            return View(city);
+        }
+        [HttpPost]
+        public IActionResult UpdateCity(City city, IFormFile? file = null)
+        {
+            var existingCity = _cityrepo.FetchByCityId(city.c_cityid);
+            if (existingCity == null)
+            {
+                return NotFound();
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                city.c_city_photo = existingCity.c_city_photo;
+            }
+            else
+            {
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, file.FileName);
+                var fileName = Path.GetFileName(file.FileName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    fileName = Guid.NewGuid().ToString() + "_" + fileName;
+                    filePath = Path.Combine(folderPath, fileName);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                var imageUrl = Path.Combine("/images", fileName);
+                city.c_city_photo = imageUrl;
+            }
+
+            if (_cityrepo.UpdateCity(city))
+            {
+                return Ok();
+            }
+
+            return BadRequest(new { success = false, message = "Failed to update city" });
+        }
+
+
+
         public IActionResult GetStates()
         {
             var states = _cityrepo.GetAllstate();
