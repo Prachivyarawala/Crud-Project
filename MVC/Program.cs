@@ -2,6 +2,7 @@ using API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using API.Repositories;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);

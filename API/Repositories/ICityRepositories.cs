@@ -16,5 +16,6 @@ namespace API.Repositories
 
         bool UpdateCity(City city);
         City FetchByCityId(int cityId);
+        void deleteCity(int id);
     }
 }

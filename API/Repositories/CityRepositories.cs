@@ -9,10 +9,7 @@ namespace API.Repositories
 {
     public class CityRepositories : CommonRepositories, ICityRepositories
     {
-<<<<<<< HEAD
 
-        
-=======
         private readonly IHttpContextAccessor _httpContextAccessor;
         public CityRepositories(IHttpContextAccessor httpContextAccessor)
         {
@@ -191,10 +188,26 @@ namespace API.Repositories
             return city;
         }
 
+         public void deleteCity(int id)
+          {
+            try
+            {
+            connection.Open();
+            using NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM t_citytask WHERE c_cityid = @c_cityid", connection);
+            cmd.Parameters.AddWithValue("@c_cityid", id);
+            cmd.ExecuteNonQuery();
+           }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
 
 
 
-
->>>>>>> fb997b022f7845462bb06580296f9102ee4ac542
     }
 }

@@ -160,6 +160,13 @@ namespace MVC.Controllers
             return Json(states);
         }
 
+        [HttpPost]
+        public IActionResult deleteCity(int id)
+        {
+            _cityrepo.deleteCity(id);
+            return RedirectToAction("Index");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
