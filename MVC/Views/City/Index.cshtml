@@ -39,7 +39,8 @@
                         <td>@city.c_cityname</td>
                         <td>@city.c_type</td>
                         <td>@city.c_city_facility</td>
-                        <td>@city.c_city_photo</td>
+                        @* <td>@city.c_city_photo</td> *@
+                        <td>  <img src="@city.c_city_photo" id="c_city_photo" name="c_city_photo" width="50px" height="50px" /></td>
                         <td>@(city.c_date.HasValue ? city.c_date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                         <td>@(city.State.c_stateid.HasValue ? city.State.c_stateid.Value.ToString() : "N/A")</td>
                         <td>
