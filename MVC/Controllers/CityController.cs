@@ -160,6 +160,7 @@ namespace MVC.Controllers
             return Json(states);
         }
 
+
         [HttpPost]
         public IActionResult delete(int id)
         {
