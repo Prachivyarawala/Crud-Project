@@ -9,5 +9,9 @@ namespace API.Repositories
     public interface ICityRepositories
     {
         List<City> FetchAllcity();
+
+        List<State> GetAllstate();
+        
+        bool AddCity(City city);
     }
 }

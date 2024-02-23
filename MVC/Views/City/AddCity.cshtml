@@ -4,127 +4,82 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New City</title>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        .city-form .form-group {
+            margin-bottom: 20px;
         }
 
-        h1 {
-            color: #333;
+        .radio-label,
+        .checkbox-label {
+            margin-right: 20px;
         }
 
-        .form-container {
-            display: flex;
-            margin: auto;
-            width: 700px;
-            justify-content: space-between;
-            border: 2px solid #007bff;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #fff;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        input,
-        select,
-        button {
-            width: calc(100% - 10px);
-            padding: 10px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        span.validation-message {
-            color: red;
-            margin-top: 5px;
-        }
-
-        button {
+        .btn-primary {
             background-color: #007bff;
-            color: #fff;
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-            transition: background-color 0.3s;
+            border-color: #007bff;
         }
 
-        button:hover {
+        .btn-primary:hover {
             background-color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
+
 </head>
 
 <body>
-    <h1>Add New City</h1>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New City</title>
+    <h1 id="title">Add City</h1>
+    <br><br><br>
+    <div class="container">
+        <div>
+            <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_cityid">City Id:</label>
+                    <input type="hidden" readonly class="form-control" id="c_cityid" name="c_cityid">
+                </div>
+                <div class="form-group">
+                    <label for="c_cityname">City Name:</label>
+                    <input type="text" class="form-control" id="c_cityname" name="c_cityname">
+                </div>
+                <div class="form-group">
+                    <label>Type:</label><br>
+                    <label class="radio-label"><input type="radio" id="rural" name="c_type" value="Rural">Rural</label>
+                    <label class="radio-label"><input type="radio" id="urban" name="c_type" value="Urban">Urban</label>
+                </div>
+                <div class="form-group">
+                    <label>Facility:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="airport" name="facility"
+                            value="Airport">Airport</label>
+                    <label class="checkbox-label"><input type="checkbox" id="metro" name="facility"
+                            value="Metro">Metro</label>
+                    <label class="checkbox-label"><input type="checkbox" id="other" name="facility"
+                            value="Other">Other</label>
+                </div>
+                <div class="form-group">
+                    <label for="c_photo">City Photo:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img class="" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
 
-    <div class="form-container">
-        <form asp-controller="City" asp-action="AddCity" method="post" enctype="multipart/form-data">
-
-            <div class="form-group">
-                <label for="c_cityname">City Name:</label>
-                <input type="text" id="c_cityname" name="c_cityname" asp-for="c_cityname">
-                <span class="validation-message" asp-validation-for="c_cityname"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_type">Type:</label>
-                <input type="text" id="c_type" name="c_type" asp-for="c_type">
-                <span class="validation-message" asp-validation-for="c_type"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_city_facility">City Facility:</label>
-                <input type="text" id="c_city_facility" name="c_city_facility" asp-for="c_city_facility">
-                <span class="validation-message" asp-validation-for="c_city_facility"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_city_photo">City Photo:</label>
-                <input type="file" id="c_city_photo" name="c_city_photo" asp-for="c_city_photo">
-                <span class="validation-message" asp-validation-for="c_city_photo"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_date">Date:</label>
-                <input type="date" id="c_date" name="c_date" asp-for="c_date">
-                <span class="validation-message" asp-validation-for="c_date"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_stateid">State ID:</label>
-                <input type="text" id="c_stateid" name="c_stateid" asp-for="c_stateid">
-                <span class="validation-message" asp-validation-for="c_stateid"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="c_userid">User ID:</label>
-                <input type="text" id="c_userid" name="c_userid" asp-for="c_userid">
-                <span class="validation-message" asp-validation-for="c_userid"></span>
-            </div>
-
-            <div class="button-container">
-                <button type="submit">Add City</button>
-            </div>
-        </form>
+                <div class="form-group">
+                    <label for="c_stateid">State:</label>
+                    <select class="form-control" id="c_stateid" name="c_stateid" asp-items="ViewBag.states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_date">Date:</label>
+                    <input type="date" class="form-control" id="c_date" name="c_date">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
+
 
     <script>
         var inactivityTimeout;
@@ -132,16 +87,60 @@
         function resetInactivityTimer() {
             clearTimeout(inactivityTimeout);
             inactivityTimeout = setTimeout(function () {
-                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
-            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+                window.location.href = '/User/Login';
+            }, 300000);
         }
 
-        // Attach event handlers for user activity (e.g., mousemove, keydown)
         document.addEventListener('mousemove', resetInactivityTimer);
         document.addEventListener('keydown', resetInactivityTimer);
 
-        // Initialize the inactivity timer on page load
         resetInactivityTimer();
+
+        document.getElementById('cityForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('cityForm');
+            var formData = new FormData(form);
+
+            var facilities = [];
+            $('input[name="facility"]:checked').each(function () {
+                facilities.push($(this).val());
+            });
+
+            formData.append("c_city_facility", facilities.join(','));
+
+            fetch('/City/AddCity', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add city.');
+                    }
+                    return response.text(); // assuming the response contains text
+                })
+                .then(data => {
+                    // Display success message or redirect to another page
+                    console.log(data); // log the response data
+                    // Optionally, display a success message to the user
+                    alert("City added successfully!");
+                    // Redirect to another page if needed
+                    window.location.href = '/City/Index';
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error('Error adding city:', error.message);
+                    // Display error message to the user
+                    alert("Failed to add city.");
+                });
+        });
+
+
+
+
+
+
+
+
 
     </script>
 </body>
