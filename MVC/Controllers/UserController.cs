@@ -100,7 +100,6 @@ namespace MVC.Controllers
         }
 
 
-
         public IActionResult Logout()
         {
             var session = _httpContextAccessor.HttpContext.Session;

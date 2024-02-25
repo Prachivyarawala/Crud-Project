@@ -161,7 +161,7 @@ namespace MVC.Controllers
         }
 
 
-        [HttpPost]
+        // [HttpPost]
         public IActionResult delete(int id)
         {
             _cityrepo.deleteCity(id);
