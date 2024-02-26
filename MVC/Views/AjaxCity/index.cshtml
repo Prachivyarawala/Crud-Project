@@ -1,0 +1,180 @@
+@model List<API.Models.City>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your All Cities</title>
+    <link rel="stylesheet" href="~/css/City.css">
+    <style>
+        .city-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            margin-right: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <h1>Your All Cities</h1>
+    <p>
+        <a class="btn btn-primary" asp-action="AddCity">Add New City</a>
+    </p>
+
+    <div class="container">
+        <div>
+            <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_cityid">City Id:</label>
+                    <input type="hidden" readonly class="form-control" id="c_cityid" name="c_cityid">
+                </div>
+                <div class="form-group">
+                    <label for="c_cityname">City Name:</label>
+                    <input type="text" class="form-control" id="c_cityname" name="c_cityname">
+                </div>
+                <div class="form-group">
+                    <label>Type:</label><br>
+                    <label class="radio-label"><input type="radio" id="rural" name="c_type" value="Rural">Rural</label>
+                    <label class="radio-label"><input type="radio" id="urban" name="c_type" value="Urban">Urban</label>
+                </div>
+                <div class="form-group">
+                    <label>Facility:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="airport" name="facility"
+                            value="Airport">Airport</label>
+                    <label class="checkbox-label"><input type="checkbox" id="metro" name="facility"
+                            value="Metro">Metro</label>
+                    <label class="checkbox-label"><input type="checkbox" id="other" name="facility"
+                            value="Other">Other</label>
+                </div>
+                <div class="form-group">
+                    <label for="c_photo">City Photo:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img class="" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_stateid">State:</label>
+                    <select class="form-control" id="c_stateid" name="c_stateid" asp-items="ViewBag.states">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_date">Date:</label>
+                    <input type="date" class="form-control" id="c_date" name="c_date">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <br />
+
+        <div class="table-container">
+            <table class="table" id="cityTable">
+                <thead>
+                    <tr>
+                        <th>City ID</th>
+                        <th>User ID</th>
+                        <th>City Name</th>
+                        <th>Type</th>
+                        <th>City Facility</th>
+                        <th>City Photo</th>
+                        <th>Date</th>
+                        <th>State ID</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var city in Model)
+                    {
+                        <tr>
+                            <td>@city.c_cityid</td>
+                            <td>@city.user.c_userid</td>
+                            <td>@city.c_cityname</td>
+                            <td>@city.c_type</td>
+                            <td>@city.c_city_facility</td>
+                            <td><img src="@city.c_city_photo" id="c_city_photo" name="c_city_photo" width="50px" height="50px" /></td>
+                            <td>@(city.c_date.HasValue ? city.c_date.Value.ToString("yyyy-MM-dd") : "N/A")</td>
+                            <td>@(city.State.c_stateid.HasValue ? city.State.c_stateid.Value.ToString() : "N/A")</td>
+                            <td>
+                                <form asp-action="delete" asp-controller="City" method="post">
+                                    <input type="hidden" name="id" value="@city.c_cityid" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+
+                                <form asp-action="UpdateCity" asp-controller="City" method="get">
+                                    <input type="hidden" name="id" value="@city.c_cityid" />
+                                    <button type="submit" class="btn btn-primary">Edit</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login'; // Redirect to the login page after inactivity
+            }, 300000); // 5 minutes timeout (300,000 milliseconds)
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        resetInactivityTimer();
+
+        document.getElementById('cityForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('cityForm');
+            var formData = new FormData(form);
+
+            var facilities = [];
+            $('input[name="facility"]:checked').each(function () {
+                facilities.push($(this).val());
+            });
+
+            formData.append("c_city_facility", facilities.join(','));
+
+            fetch('/City/AddCity', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add city.');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log(data);
+                    alert("City added successfully!");
+                    window.location.href = '/City/Index';
+                })
+                .catch(error => {
+                    console.error('Error adding city:', error.message);
+                    alert("Failed to add city.");
+                });
+        });
+    </script>
+</body>
+
+</html>
