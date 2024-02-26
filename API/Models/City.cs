@@ -11,7 +11,7 @@ namespace API.Models
         public string c_cityname { get; set; }
         public string c_type { get; set; }
         public string c_city_facility { get; set; }
-        public string c_city_photo { get; set; }
+        public string? c_city_photo { get; set; }
         
         public DateTime? c_date { get; set; }
 
@@ -21,6 +21,6 @@ namespace API.Models
         
 
         [ForeignKey("c_userid")]
-        public virtual User user{get; set;}
+        public virtual User? user{get; set;}
     }
 }

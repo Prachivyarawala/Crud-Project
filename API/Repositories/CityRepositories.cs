@@ -25,8 +25,9 @@ namespace API.Repositories
             {
                 connection.Open();
                 var cmd = new NpgsqlCommand("SELECT ct.c_cityid, cu.c_userid, cu.c_username, ct.c_cityname, ct.c_type, ct.c_city_facility, ct.c_city_photo, ct.c_stateid, ts.c_statename, ct.c_date FROM public.t_citytask ct JOIN public.t_srs_user cu ON ct.c_userid = cu.c_userid JOIN public.t_state ts ON ct.c_stateid = ts.c_stateid WHERE ct.c_userid = @userid", connection);
+                Console.WriteLine("inside repo id : " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+
                 cmd.Parameters.AddWithValue("@userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
-                Console.WriteLine("id : " + _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -52,6 +53,7 @@ namespace API.Repositories
 
                     };
                     CityList.Add(city);
+                    // Console.WriteLine(city);
                 }
             }
             catch (Exception ex)
@@ -95,8 +97,9 @@ namespace API.Repositories
             {
                 connection.Open();
                 var cmd = new NpgsqlCommand("INSERT INTO public.t_citytask (c_cityname, c_type, c_city_facility, c_city_photo, c_stateid, c_userid, c_date) VALUES (@cityname, @type, @facility, @photo, @stateid, @userid, @date)", connection);
+                Console.WriteLine("add repo id : " );
 
-                cmd.Parameters.AddWithValue("@userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+                cmd.Parameters.AddWithValue("@userid",city.c_userid);
                 cmd.Parameters.AddWithValue("@cityname", city.c_cityname);
                 cmd.Parameters.AddWithValue("@type", city.c_type);
                 cmd.Parameters.AddWithValue("@facility", city.c_city_facility);

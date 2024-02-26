@@ -26,7 +26,7 @@
 </head>
 
 <body>
-    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+    <h1 id="session"></h1>
 
     <h1>Your All Cities</h1>
     <p>
@@ -55,7 +55,7 @@
             </table>
         </div>
         <div>
-            <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
+            <form id="Form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="c_cityid">City Id:</label>
                     <input type="text" readonly class="form-control" id="c_cityid" name="c_cityid">
@@ -101,14 +101,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
+        var username = sessionStorage.getItem('userid');
         $(document).ready(function () {
+            console.log("Username:", username);
+            if (username) {
+
+                document.getElementById('session').innerHTML = username;
+            } else {
+                console.log("Username is empty or null");
+            }
+
+
             loadCity();
+
         });
+
         loadStates();
+
 
         function loadStates() {
             $.ajax({
-                url: '/AjaxCity/GetAllStates',
+                url: 'https://localhost:7029/api/ApiCity/states',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -125,7 +138,7 @@
 
         function LoadData(cityId) {
             $.ajax({
-                url: '/AjaxCity/fetchData/' + cityId,
+                url: 'https://localhost:7029/api/ApiCity/GetOneCity?id=' + cityId,
                 type: 'GET',
                 success: function (data) {
                     console.log(data);
@@ -150,7 +163,7 @@
 
         function loadCity() {
             $.ajax({
-                url: '/AjaxCity/GetAllCity',
+                url: 'https://localhost:7029/api/ApiCity/GetCities?id=' + username,
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -182,8 +195,8 @@
 
         function DeleteData(id) {
             $.ajax({
-                url: '/AjaxCity/deleteCity/' + id,
-                type: 'POST',
+                url: 'https://localhost:7029/api/ApiCity?id=' + id,
+                type: 'DELETE',
                 success: function (response) {
                     window.location.reload();
                     console.log("Data deleted successfully");
@@ -195,9 +208,9 @@
         }
 
 
-        document.getElementById('cityForm').addEventListener('submit', function (event) {
+        document.getElementById('Form').addEventListener('submit', function (event) {
             event.preventDefault();
-            var form = document.getElementById('cityForm');
+            var form = document.getElementById('Form');
             var formData = new FormData(form);
             var facilities = [];
             $('input[name="facility"]:checked').each(function () {
@@ -205,6 +218,7 @@
             });
 
             formData.append("c_city_facility", facilities.join(','));
+            formData.append("c_userid", username);
             var fileInput = document.getElementById('file');
             if (fileInput.files.length === 0) {
                 formData.append("file", null);
@@ -224,7 +238,7 @@
                     .then(data => {
                         console.log(data);
                         alert("City Updated successfully!");
-                        window.location.href = '/AjaxCity/Index';
+                        window.location.href = '/MvcCity/Index';
                     })
                     .catch(error => {
                         console.error('Error adding city:', error.message);
@@ -232,9 +246,15 @@
                     });
 
             }
-            else{
-                console.log(formData);
-                fetch('/AjaxCity/AddCity', {
+
+            else {
+                formData.delete("c_cityid");
+                formData.append("c_cityid", 11111);
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                fetch('https://localhost:7029/api/ApiCity', {
                     method: 'POST',
                     body: formData
 
@@ -248,7 +268,7 @@
                     .then(data => {
                         console.log(data);
                         alert("City added successfully!");
-                        window.location.href = '/AjaxCity/Index';
+                        window.location.href = '/MvcCity/Index';
                     })
                     .catch(error => {
                         console.error('Error adding city:', error.message);
