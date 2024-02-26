@@ -165,7 +165,7 @@
                             <td>${city.c_city_facility}</td>
                             <td><img src="${city.c_city_photo}" width="50px" height="50px" /></td>
                             <td>${city.c_date ? new Date(city.c_date).toLocaleDateString() : 'N/A'}</td>
-                            <td>${city.State ? city.State.c_stateid : 'N/A'}</td>
+                            <td>${city.state.c_stateid}</td>
                             <td>
                                 <button type="button" onClick="DeleteData(${city.c_cityid})"  class="btn btn-danger">Delete</button>
 
