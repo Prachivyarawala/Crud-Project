@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your All Cities</title>
+    <style>
+        .city-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            margin-right: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome, @Context.Session.GetInt32("userid"): @Context.Session.GetString("username")!</h1>
+
+    <h1>Your All Cities</h1>
+    <p>
+        <a class="btn btn-primary" asp-action="AddCity">Add New City</a>
+    </p>
+
+    <div class="container">
+        <div class="table-container">
+            <table class="table" id="cityTable">
+                <thead>
+                    <tr>
+                        <th>City ID</th>
+                        <th>User ID</th>
+                        <th>City Name</th>
+                        <th>Type</th>
+                        <th>City Facility</th>
+                        <th>City Photo</th>
+                        <th>Date</th>
+                        <th>State ID</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <form method="post" id="cityForm" class="city-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="c_cityid">City Id:</label>
+                    <input type="text" readonly class="form-control" id="c_cityid" name="c_cityid">
+                </div>
+                <div class="form-group">
+                    <label for="c_cityname">City Name:</label>
+                    <input type="text" class="form-control" id="c_cityname" name="c_cityname">
+                </div>
+                <div class="form-group">
+                    <label>Type:</label><br>
+                    <label class="radio-label"><input type="radio" id="rural" name="c_type" value="Rural">Rural</label>
+                    <label class="radio-label"><input type="radio" id="urban" name="c_type" value="Urban">Urban</label>
+                </div>
+                <div class="form-group">
+                    <label>Facility:</label><br>
+                    <label class="checkbox-label"><input type="checkbox" id="airport" name="facility"
+                            value="Airport">Airport</label>
+                    <label class="checkbox-label"><input type="checkbox" id="metro" name="facility"
+                            value="Metro">Metro</label>
+                    <label class="checkbox-label"><input type="checkbox" id="other" name="facility"
+                            value="Other">Other</label>
+                </div>
+                <div class="form-group">
+                    <label for="c_photo">City Photo:</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <img class="" id="c_city_photo" name="c_city_photo" width="50px" height="50px" />
+
+                <div class="form-group">
+                    <label for="c_stateid">State:</label>
+                    <select class="form-control" id="c_stateid" name="c_stateid">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_date">Date:</label>
+                    <input type="date" class="form-control" id="c_date" name="c_date">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            loadCity();
+        });
+        loadStates();
+
+        function loadStates() {
+            $.ajax({
+                url: '/AjaxCity/GetAllStates',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var stateDropdown = $('#c_stateid');
+                    stateDropdown.empty();
+                    stateDropdown.append($('<option>').val('').text('Select State'));
+
+                    data.forEach(function (state) {
+                        stateDropdown.append($('<option>').val(state.c_stateid).text(state.c_statename));
+                    });
+                }
+            });
+        }
+
+        function LoadData(cityId) {
+            $.ajax({
+                url: '/AjaxCity/fetchData/' + cityId,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('#c_cityid').val(data.c_cityid);
+                    $('#c_cityname').val(data.c_cityname);
+                    $('input[name="c_type"][value="' + data.c_type + '"]').prop('checked', true);
+                    var facilities = data.c_city_facility.split(',');
+                    facilities.forEach(function (facility) {
+                        $('input[name="facility"][value="' + facility + '"]').prop('checked', true);
+                    });
+                    $('#c_city_photo').attr('src', data.c_city_photo);
+                    $('#c_stateid').val(data.state.c_stateid);
+                    $('#c_stateid').change();
+                    var date = new Date(data.c_date);
+                    console.log(data.c_date);
+                    var formattedDate = date.toLocaleDateString();
+                    $('#c_date').val(formattedDate);
+                }
+            });
+        }
+
+
+        function loadCity() {
+            $.ajax({
+                url: '/AjaxCity/GetAllCity',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var cityTable = $('#cityTable tbody');
+                    cityTable.empty();
+                    data.forEach(function (city) {
+                        var row = `<tr>
+                            <td>${city.c_cityid}</td>
+                            <td>${city.user.c_userid}</td>
+                            <td>${city.c_cityname}</td>
+                            <td>${city.c_type}</td>
+                            <td>${city.c_city_facility}</td>
+                            <td><img src="${city.c_city_photo}" width="50px" height="50px" /></td>
+                            <td>${city.c_date ? new Date(city.c_date).toLocaleDateString() : 'N/A'}</td>
+                            <td>${city.state.c_stateid}</td>
+                            <td>
+                                <button type="button" onClick="DeleteData(${city.c_cityid})"  class="btn btn-danger">Delete</button>
+
+                                <button type="button" onclick="LoadData(${city.c_cityid})" class="btn btn-primary">Edit</button>
+
+                            </td>
+                        </tr>`;
+                        cityTable.append(row);
+                    });
+                }
+            });
+
+        }
+
+        function DeleteData(id) {
+            $.ajax({
+                url: '/AjaxCity/deleteCity/' + id,
+                type: 'POST',
+                success: function (response) {
+                    window.location.reload();
+                    console.log("Data deleted successfully");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error deleting data:", error);
+                }
+            });
+        }
+
+
+        document.getElementById('cityForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var form = document.getElementById('cityForm');
+            var formData = new FormData(form);
+            var facilities = [];
+            $('input[name="facility"]:checked').each(function () {
+                facilities.push($(this).val());
+            });
+
+            formData.append("c_city_facility", facilities.join(','));
+            var fileInput = document.getElementById('file');
+            if (fileInput.files.length === 0) {
+                formData.append("file", null);
+            }
+            var cityid = $('#c_cityid').val();
+            if (cityid && cityid > 0) {
+                fetch('/AjaxCity/UpdateCity', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to Updated city.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("City Updated successfully!");
+                        window.location.href = '/AjaxCity/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error adding city:', error.message);
+                        alert("Failed to add city.");
+                    });
+
+            }
+            else{
+                console.log(formData);
+                fetch('/AjaxCity/AddCity', {
+                    method: 'POST',
+                    body: formData
+
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add city.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert("City added successfully!");
+                        window.location.href = '/AjaxCity/Index';
+                    })
+                    .catch(error => {
+                        console.error('Error adding city:', error.message);
+                        alert("Failed to add city.");
+                    });
+            }
+        });
+
+
+        var inactivityTimeout;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(function () {
+                window.location.href = '/User/Login';
+            }, 300000);
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        resetInactivityTimer();
+
+    </script>
+
+</body>
+
+</html>

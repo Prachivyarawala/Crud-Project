@@ -7,14 +7,16 @@ using API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using API.Models;
+using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 namespace MVC.Controllers
 {
-    public class CityController : Controller
+    public class AjaxCityController : Controller
     {
         private readonly ILogger<CityController> _logger;
         private readonly ICityRepositories _cityrepo;
 
-        public CityController(ILogger<CityController> logger, ICityRepositories cityrepo)
+        public AjaxCityController(ILogger<CityController> logger, ICityRepositories cityrepo)
         {
             _logger = logger;
             _cityrepo = cityrepo;
@@ -29,24 +31,25 @@ namespace MVC.Controllers
                 return RedirectToAction("Login", "User");
             }
             ViewBag.IsAuthenticated = true;
-            var allCity = _cityrepo.FetchAllcity();
-            return View(allCity);
-        }
-
-        public IActionResult AddCity()
-        {
-            string username = HttpContext.Session.GetString("username");
-            if (username == null)
-            {
-                ViewBag.IsAuthenticated = false;
-                return RedirectToAction("Login", "User");
-            }
-            ViewBag.IsAuthenticated = true;
-            var states = _cityrepo.GetAllstate();
-            ViewBag.states = new SelectList(states, "c_stateid", "c_statename");
-
             return View();
         }
+
+        public IActionResult GetAllCity()
+        {
+            var allCity = _cityrepo.FetchAllcity();
+            return Json(allCity);
+        }
+        public IActionResult GetAllStates()
+        {
+            var GetAllStates = _cityrepo.GetAllstate();
+            return Json(GetAllStates);
+        }
+        public IActionResult fetchData(int id)
+        {
+            var data = _cityrepo.FetchByCityId(id);
+            return Json(data);
+        }
+
 
         [HttpPost]
         public IActionResult AddCity(City city, IFormFile file)
@@ -98,9 +101,8 @@ namespace MVC.Controllers
             }
             ViewBag.IsAuthenticated = true;
             var states = _cityrepo.GetAllstate();
-            //Console.WriteLine("id" + id);
             var city = _cityrepo.FetchByCityId(id);
-            ViewBag.states = new SelectList(states, "c_stateid", "c_statename",city.State.c_stateid);
+            ViewBag.states = new SelectList(states, "c_stateid", "c_statename", city.State.c_stateid);
 
             return View(city);
         }
@@ -159,6 +161,12 @@ namespace MVC.Controllers
             var states = _cityrepo.GetAllstate();
             return Json(states);
         }
+        [HttpPost]
+        public IActionResult deleteCity(int id)
+        {
+            _cityrepo.deleteCity(id);
+            return Ok();
+        }
 
 
         // [HttpPost]
@@ -167,7 +175,6 @@ namespace MVC.Controllers
             _cityrepo.deleteCity(id);
             return RedirectToAction("Index");
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
