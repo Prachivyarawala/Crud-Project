@@ -77,7 +77,7 @@ namespace MVC.Controllers
             var imageUrl = Path.Combine("/images", fileName);
             city.c_city_photo = imageUrl;
 
-            if (_cityrepo.AddCity(city))
+            if (_cityrepo.AddAjaxCity(city))
             {
                 return Ok(new { success = true });
             }

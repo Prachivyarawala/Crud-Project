@@ -102,6 +102,9 @@
 
     <script>
         var username = sessionStorage.getItem('userid');
+        if(!username){
+            window.location.href = '/MvcUser/Login';
+        }
         $(document).ready(function () {
             console.log("Username:", username);
             if (username) {
@@ -283,7 +286,7 @@
         function resetInactivityTimer() {
             clearTimeout(inactivityTimeout);
             inactivityTimeout = setTimeout(function () {
-                window.location.href = '/User/Login';
+                window.location.href = '/MvcUser/Login';
             }, 300000);
         }
 

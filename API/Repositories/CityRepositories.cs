@@ -97,9 +97,40 @@ namespace API.Repositories
             {
                 connection.Open();
                 var cmd = new NpgsqlCommand("INSERT INTO public.t_citytask (c_cityname, c_type, c_city_facility, c_city_photo, c_stateid, c_userid, c_date) VALUES (@cityname, @type, @facility, @photo, @stateid, @userid, @date)", connection);
-                Console.WriteLine("add repo id : " );
 
-                cmd.Parameters.AddWithValue("@userid",city.c_userid);
+
+                cmd.Parameters.AddWithValue("@userid", city.c_userid);
+                cmd.Parameters.AddWithValue("@cityname", city.c_cityname);
+                cmd.Parameters.AddWithValue("@type", city.c_type);
+                cmd.Parameters.AddWithValue("@facility", city.c_city_facility);
+                cmd.Parameters.AddWithValue("@photo", city.c_city_photo);
+                cmd.Parameters.AddWithValue("@stateid", city.c_stateid);
+                cmd.Parameters.AddWithValue("@date", city.c_date);
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool AddAjaxCity(City city)
+        {
+            try
+            {
+                connection.Open();
+                var cmd = new NpgsqlCommand("INSERT INTO public.t_citytask (c_cityname, c_type, c_city_facility, c_city_photo, c_stateid, c_userid, c_date) VALUES (@cityname, @type, @facility, @photo, @stateid, @userid, @date)", connection);
+
+
+                cmd.Parameters.AddWithValue("@userid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
                 cmd.Parameters.AddWithValue("@cityname", city.c_cityname);
                 cmd.Parameters.AddWithValue("@type", city.c_type);
                 cmd.Parameters.AddWithValue("@facility", city.c_city_facility);
@@ -191,15 +222,15 @@ namespace API.Repositories
             return city;
         }
 
-         public void deleteCity(int id)
-          {
+        public void deleteCity(int id)
+        {
             try
             {
-            connection.Open();
-            using NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM t_citytask WHERE c_cityid = @c_cityid", connection);
-            cmd.Parameters.AddWithValue("@c_cityid", id);
-            cmd.ExecuteNonQuery();
-           }
+                connection.Open();
+                using NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM t_citytask WHERE c_cityid = @c_cityid", connection);
+                cmd.Parameters.AddWithValue("@c_cityid", id);
+                cmd.ExecuteNonQuery();
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);

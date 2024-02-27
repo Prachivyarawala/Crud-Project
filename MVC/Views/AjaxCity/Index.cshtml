@@ -224,7 +224,7 @@
                     .then(data => {
                         console.log(data);
                         alert("City Updated successfully!");
-                        window.location.href = '/AjaxCity/Index';
+                        loadCity();
                     })
                     .catch(error => {
                         console.error('Error adding city:', error.message);
@@ -248,7 +248,7 @@
                     .then(data => {
                         console.log(data);
                         alert("City added successfully!");
-                        window.location.href = '/AjaxCity/Index';
+                        loadCity();
                     })
                     .catch(error => {
                         console.error('Error adding city:', error.message);
