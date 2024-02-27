@@ -155,13 +155,23 @@
                     $('#c_city_photo').attr('src', data.c_city_photo);
                     $('#c_stateid').val(data.state.c_stateid);
                     $('#c_stateid').change();
+
+                    // Date handling
                     var date = new Date(data.c_date);
-                    console.log(data.c_date);
-                    var formattedDate = date.toLocaleDateString();
+                    var month = '' + (date.getMonth() + 1);
+                    var day = '' + date.getDate();
+                    var year = date.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    var formattedDate = [year, month, day].join('-');
                     $('#c_date').val(formattedDate);
                 }
             });
         }
+
+
 
 
         function loadCity() {
