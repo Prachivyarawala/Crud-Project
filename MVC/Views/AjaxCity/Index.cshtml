@@ -139,13 +139,18 @@
                     $('#c_city_photo').attr('src', data.c_city_photo);
                     $('#c_stateid').val(data.state.c_stateid);
                     $('#c_stateid').change();
+
+                    // Date handling
                     var date = new Date(data.c_date);
-                    console.log(data.c_date);
-                    var formattedDate = date.toLocaleDateString();
+                    var year = date.getFullYear();
+                    var month = String(date.getMonth() + 1).padStart(2, '0');
+                    var day = String(date.getDate()).padStart(2, '0');
+                    var formattedDate = `${year}-${month}-${day}`;
                     $('#c_date').val(formattedDate);
                 }
             });
         }
+
 
 
         function loadCity() {
@@ -232,7 +237,7 @@
                     });
 
             }
-            else{
+            else {
                 console.log(formData);
                 fetch('/AjaxCity/AddCity', {
                     method: 'POST',
